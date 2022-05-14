@@ -4,7 +4,7 @@ import SplineLoader from '@splinetool/loader';
 
 // camera
 const camera = new THREE.OrthographicCamera(window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -100000, 100000);
-camera.position.set(-584.88, 86.48, 858.67);
+camera.position.set(100, 0, 100);
 camera.quaternion.setFromEuler(new THREE.Euler(-0.14, -0.52, -0.07));
 
 // scene
@@ -16,6 +16,14 @@ loader.load(
     'https://prod.spline.design/gHsdhuKGbvwDH03e/scene.splinecode',
     (splineScene) => {
         scene.add(splineScene);
+        // manage color if need
+
+        // let yellow = new THREE.MeshPhongMaterial({ color: 0xf5e942 })
+        // let green = new THREE.MeshPhongMaterial({ color: 0x2b884a })
+        // const cube = scene.getObjectByName("cube")
+        // const ball = scene.getObjectByName("ball")
+        // cube.material = yellow
+        // ball.material = green
     }
 );
 
@@ -29,7 +37,7 @@ document.body.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 
-scene.background = new THREE.Color('#8996be');
+scene.background = new THREE.Color('#1B1B1C');
 renderer.setClearAlpha(1);
 
 // orbit controls
@@ -52,6 +60,7 @@ function animate(time) {
     renderer.render(scene, camera);
 }
 
+// click interaction
 renderer.domElement.addEventListener("click", onclick, true);
 let selectedObject;
 var raycaster = new THREE.Raycaster();
@@ -63,9 +72,16 @@ function onclick(event) {
     const intersects = raycaster.intersectObjects(scene.children, true); //array
     if (intersects.length > 0) {
         selectedObject = intersects[0];
-        console.log(selectedObject.object.material);
-        // const yellow = new THREE.Color(0xf5e942);
-        selectedObject.object.material = new THREE.MeshPhongMaterial({ color: 0xf5e942 })
-        // selectedObject.object.material.fragment.color.value.b = 2
+        console.log(selectedObject);
+        switch (selectedObject.object.name) {
+            case 'ball':
+                selectedObject.object.material = new THREE.MeshPhongMaterial({ color: 0xf5e942 })
+                break;
+            case 'cube':
+                selectedObject.object.material = new THREE.MeshPhongMaterial({ color: 0xaad7ef })
+                break;
+            default:
+                return
+        }
     }
 }
