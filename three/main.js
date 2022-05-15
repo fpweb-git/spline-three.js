@@ -71,14 +71,26 @@ function onclick(event) {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children, true); //array
     if (intersects.length > 0) {
-        selectedObject = intersects[0];
+        selectedObject = intersects[0].object;
+        // set matrix to update on change
+        selectedObject.matrixAutoUpdate = true;
         console.log(selectedObject);
-        switch (selectedObject.object.name) {
+        switch (selectedObject.name) {
             case 'ball':
-                selectedObject.object.material = new THREE.MeshPhongMaterial({ color: 0xf5e942 })
+                selectedObject.material = new THREE.MeshPhongMaterial({ color: 0xf5e942 })
+                gsap.to(selectedObject.position, { duration: .5, y: 100, ease: Power1.easeOut, });
                 break;
             case 'cube':
-                selectedObject.object.material = new THREE.MeshPhongMaterial({ color: 0xaad7ef })
+                gsap.to(camera, {
+                    duration: 1,
+                    zoom: 2,
+                    onUpdate: function () {
+
+                        camera.updateProjectionMatrix();
+
+                    }
+                });
+                gsap.to(camera.position, { duration: 1, x: -125, y: 25, z: 60, ease: Power1.easeOut, });
                 break;
             default:
                 return
